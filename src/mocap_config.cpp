@@ -98,12 +98,15 @@ void PublishedRigidBody::publish(RigidBody &body)
   geometry_msgs::PoseStamped pose = body.get_ros_pose();
 
 
-
+  //TODO: Use config or optitrack data
+  tf::Quaternion qCameraOffset = tf::createQuaternionFromRPY(0,-0.436332,0); // 25 degrees
+  //tf::Quaternion qCameraOffset = tf::createQuaternionFromRPY(0,0,0); // 0 degrees
   tf::Quaternion qOffset = tf::createQuaternionFromRPY(2.96706,-0.2495821,0.6510078);
+  //tf::Quaternion qOffset = tf::createQuaternionFromRPY(2.96706,0,0);
   tf::Quaternion qPose;
   tf::quaternionMsgToTF(pose.pose.orientation,qPose);
 
-  tf::Quaternion newQ = qPose*qOffset;
+  tf::Quaternion newQ = qCameraOffset*qPose*qOffset;
   newQ.normalize();
   geometry_msgs::Quaternion qMsg;
   tf::quaternionTFToMsg(newQ,qMsg);
