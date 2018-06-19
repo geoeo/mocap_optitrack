@@ -97,6 +97,20 @@ void PublishedRigidBody::publish(RigidBody &body)
   // TODO Below was const, see if there a way to keep it like that.
   geometry_msgs::PoseStamped pose = body.get_ros_pose();
 
+
+
+  tf::Quaternion qOffset = tf::createQuaternionFromRPY(2.96706,-0.2495821,0.6510078);
+  tf::Quaternion qPose;
+  tf::quaternionMsgToTF(pose.pose.orientation,qPose);
+
+  tf::Quaternion newQ = qPose*qOffset;
+  newQ.normalize();
+  geometry_msgs::Quaternion qMsg;
+  tf::quaternionTFToMsg(newQ,qMsg);
+
+  pose.pose.orientation = qMsg;
+
+
   if (publish_pose)
   {
     pose.header.frame_id = parent_frame_id;
